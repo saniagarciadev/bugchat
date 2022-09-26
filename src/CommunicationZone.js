@@ -3,6 +3,7 @@ import './App.css';
 import ChatZone from './ChatZone';
 import ContactWindow from './ContactWindow';
 import InputZone from './InputZone';
+import ConversationsList from './ConversationsList';
 
 const CommunicationZone = () => {
   const [state, setState] = React.useState({
@@ -99,6 +100,7 @@ const CommunicationZone = () => {
 
   return (
     <div className="chatHost innerShadow">
+      <ConversationsList />
       <ContactWindow />
       <ChatZone chatItem={state.history} />
       <InputZone
