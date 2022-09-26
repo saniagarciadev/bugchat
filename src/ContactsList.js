@@ -6,7 +6,7 @@ function ContactsList(props) {
     <div className="contactsList">
       {props.contacts.map((contact) => (
         <button
-          onClick={() => console.log('TEST', contact)}
+          onClick={() => props.handleSelect(contact)}
           className="contactButton"
         >
           <span className="contactName">{contact}</span>

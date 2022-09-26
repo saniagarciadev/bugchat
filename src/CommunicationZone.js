@@ -18,11 +18,23 @@ const CommunicationZone = () => {
   });
   const stateRef = React.useRef(state);
 
-  function handleSelect(event) {
+  function handleSelect(contact) {
     setState({
       ...state,
-      selectedContact: event.target.value,
+      selectedContact: contact,
     });
+    stateRef.current.selectedContact = contact;
+
+    if (
+      stateRef.current.history[stateRef.current.selectedContact].length === 0
+    ) {
+      let newState = {
+        ...stateRef.current,
+      };
+      newState.history[stateRef.current.selectedContact] = ['How can I help?'];
+      setState(newState);
+      stateRef.current = newState;
+    }
   }
 
   function handleChange(event) {
@@ -43,7 +55,6 @@ const CommunicationZone = () => {
         ...state.history[stateRef.current.selectedContact],
         event.target.value,
       ];
-      console.log('TEST newState', newState);
       setState(newState);
       stateRef.current = newState;
 
