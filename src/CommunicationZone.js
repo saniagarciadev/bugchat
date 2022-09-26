@@ -3,15 +3,27 @@ import './App.css';
 import ChatZone from './ChatZone';
 import ContactWindow from './ContactWindow';
 import InputZone from './InputZone';
-import ConversationsList from './ConversationsList';
+import ContactsList from './ContactsList';
 
 const CommunicationZone = () => {
   const [state, setState] = React.useState({
+    selectedContact: 'Dr. Rubberduck',
     value: '',
     disposable: '',
-    history: ['How can I help?'],
+    history: {
+      'Dr. Rubberduck': ['How can I help?'],
+      'Duckelina Smith': [],
+      Duckman: [],
+    },
   });
   const stateRef = React.useRef(state);
+
+  function handleSelect(event) {
+    setState({
+      ...state,
+      selectedContact: event.target.value,
+    });
+  }
 
   function handleChange(event) {
     setState({
@@ -22,12 +34,16 @@ const CommunicationZone = () => {
 
   function handleSubmit(event) {
     if (event.key === 'Enter') {
-      const newState = {
+      let newState = {
         ...state,
         value: '',
         disposable: event.target.value,
-        history: [...state.history, event.target.value],
       };
+      newState.history[stateRef.current.selectedContact] = [
+        ...state.history[stateRef.current.selectedContact],
+        event.target.value,
+      ];
+      console.log('TEST newState', newState);
       setState(newState);
       stateRef.current = newState;
 
@@ -57,31 +73,38 @@ const CommunicationZone = () => {
       'that does not sound like a bug',
     ];
 
+    let newState = {
+      ...stateRef.current,
+    };
+
     if (stateRef.current.disposable.length <= 7) {
       let response =
         answersAdjust[Math.floor(Math.random() * answersAdjust.length)];
-      setState({
-        ...stateRef.current,
-        history: [...stateRef.current.history, response],
-      });
+      newState.history[stateRef.current.selectedContact] = [
+        ...state.history[stateRef.current.selectedContact],
+        response,
+      ];
     } else if (
-      stateRef.current.history.length <= 3 &&
+      stateRef.current.history[stateRef.current.selectedContact].length <= 3 &&
       stateRef.current.disposable.length > 6
     ) {
       let response =
         answersBasic[Math.floor(Math.random() * answersBasic.length)];
-      setState({
-        ...stateRef.current,
-        history: [...stateRef.current.history, response],
-      });
-    } else if (stateRef.current.history.length >= 4) {
+      newState.history[stateRef.current.selectedContact] = [
+        ...state.history[stateRef.current.selectedContact],
+        response,
+      ];
+    } else if (
+      stateRef.current.history[stateRef.current.selectedContact].length >= 4
+    ) {
       let response =
         answersAdvanced[Math.floor(Math.random() * answersAdvanced.length)];
-      setState({
-        ...stateRef.current,
-        history: [...stateRef.current.history, response],
-      });
+      newState.history[stateRef.current.selectedContact] = [
+        ...state.history[stateRef.current.selectedContact],
+        response,
+      ];
     }
+    setState(newState);
   }
 
   function cleanHistory() {
@@ -100,9 +123,15 @@ const CommunicationZone = () => {
 
   return (
     <div className="chatHost innerShadow">
-      <ConversationsList />
-      <ContactWindow />
-      <ChatZone chatItem={state.history} />
+      <ContactsList
+        contacts={Object.keys(state.history)}
+        handleSelect={handleSelect}
+      />
+      <ContactWindow contactName={stateRef.current.selectedContact} />
+      <ChatZone
+        contactName={stateRef.current.selectedContact}
+        chatItem={state.history[stateRef.current.selectedContact]}
+      />
       <InputZone
         handleChange={handleChange}
         handleSubmit={handleSubmit}
