@@ -2,11 +2,18 @@ import React from 'react';
 import './App.css';
 
 function ConversationsList() {
+  const ducks = ['Dr. Rubberduck', 'Duckelina Smith', 'Duckman'];
+
   return (
     <div className="conversationsList">
-      <div className="headerWrapper">
-        <span className="contactName">hi Dr. Rubberduck</span>
-      </div>
+      {ducks.map((duck) => (
+        <button
+          onClick={() => console.log('TEST', duck)}
+          className="contactButton"
+        >
+          <span className="contactName">{duck}</span>
+        </button>
+      ))}
     </div>
   );
 }
